@@ -23,5 +23,9 @@ public class AccountService {
             Account accountCreated = accountRepository.save(account);
             return accountCreated;
         }   
-    } 
+    }
+    
+    public Optional<Account> login(Account account) {
+        return accountRepository.findByUsernameAndPassword(account.getUsername(), account.getPassword());
+    }
 }
