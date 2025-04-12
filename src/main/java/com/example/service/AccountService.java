@@ -28,4 +28,8 @@ public class AccountService {
     public Optional<Account> login(Account account) {
         return accountRepository.findByUsernameAndPassword(account.getUsername(), account.getPassword());
     }
+
+    public Optional<Account> findById(Integer id) {
+        return accountRepository.findById(id);
+    }
 }
