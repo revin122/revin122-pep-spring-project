@@ -35,19 +35,6 @@ public class SocialMediaController {
     @Autowired
     private MessageService messageService;
 
-    /*
-
-## 8: Our API should be able to retrieve all messages written by a particular user.
-
-As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/accounts/{accountId}/messages.
-
-- The response body should contain a JSON representation of a list containing all messages posted by a particular user, which is retrieved from the database. It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
-
-## 9: The Project utilizes the Spring Framework.
-
-- The project was created leveraging the spring framework, including dependency injection, autowire functionality and/or Spring annotations. 
-     */
-
     // GET
 
     @GetMapping("messages")
@@ -60,11 +47,15 @@ As a user, I should be able to submit a GET request on the endpoint GET localhos
         return messageService.getMessageById(messageId);
     }
 
+    @GetMapping("accounts/{accountId}/messages")
+    public List<Message> getAllMessagesByAccountId(@PathVariable int accountId) {
+        return messageService.getAllMessageByPostedBy(accountId);
+    }
 
     // POST
 
     @PostMapping("register")
-    public ResponseEntity<Account> register(@RequestBody Account account) {
+    public ResponseEntity<?> register(@RequestBody Account account) {
         if(account != null && account.getUsername() != null && !account.getUsername().isBlank() && account.getPassword().length() >= 4) {
             Account newAccount = accountService.register(account);
             if(newAccount != null) 
@@ -72,7 +63,7 @@ As a user, I should be able to submit a GET request on the endpoint GET localhos
             else
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Invalid registration");
     }
 
     @PostMapping("login")
@@ -85,12 +76,12 @@ As a user, I should be able to submit a GET request on the endpoint GET localhos
     }
 
      @PostMapping("messages")
-     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
+     public ResponseEntity<?> createMessage(@RequestBody Message message) {
         Message createdMessage = messageService.create(message);
         if(createdMessage != null) {
             return ResponseEntity.ok().body(createdMessage);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Invalid message");
      }
 
 
@@ -102,7 +93,7 @@ As a user, I should be able to submit a GET request on the endpoint GET localhos
         if(recordUpdated == 1) {
             return ResponseEntity.ok().body(1);
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().body("Invalid message");
     }
 
     // DELETE

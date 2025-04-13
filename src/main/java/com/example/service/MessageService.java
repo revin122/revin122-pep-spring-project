@@ -70,4 +70,12 @@ public class MessageService {
         }
         return 0;
     }
+
+    public List<Message> getAllMessageByPostedBy(Integer postedBy) {
+        Optional<List<Message>> messageListOptional = messageRepository.findByPostedBy(postedBy);
+        if(messageListOptional.isPresent())
+            return messageListOptional.get();
+        else
+            return null;
+    }
 }
